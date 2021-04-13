@@ -1,124 +1,141 @@
+var questions = [{
+    question: "Find the third side of a right angle triangle with legs 6cm and 8cm?",
+    choices: ["10", "6", "4", "12"],
+    correctAnswer: 0
+}, {
+    question: "A slope of 1 makes and angle of what size?",
+    choices: ["45", "60", "90", "270"],
+    correctAnswer: 0
+}, {
+    question: "Vertical lines like the y-axis have a slope of...?",
+    choices: ["0", "undefined", "1", "-1"],
+    correctAnswer: 1
+}, {
+    question: "Which is the longest river?",
+    choices: ["Nile", "Amazon", "Mississippi", "Yangtze"],
+    correctAnswer: 0
+}, {
+    question: "Which of the following football legends never played for Barcelona?",
+    choices: ["Ronaldo", "Maldini", "Maradona", "De-stefano"],
+    correctAnswer: 1
+}, {
+    question: "The following countries have the same name as their capital cities except?",
+    choices: ["Luxembourg", "Panama", "Vatican city", "Switzerland"],
+    correctAnswer: 3
+}, {
+    question: "The probability of rolling a die and landing on a number less than 7 is?",
+    choices: ["0", "1", "6", "7"],
+    correctAnswer: 1
+}, {
+    question: "If xy = 1, what fact can be deduced from the equation?",
+    choices: ["Both x and y can be 1", "x and y are reciprocals", "Neigther can be zero", "All of the above"],
+    correctAnswer: 3
+}, {
+    question: "The following countries are located in east africa except?",
+    choices: ["Namibia", "Djibouti", "somalia", "Seychelles"],
+    correctAnswer: 0
+}, {
+    question: "Which is the most populated country Asia?",
+    choices: ["India", "Indonesia", "China", "Japan"],
+    correctAnswer: 2
+}];
 
-$(document).ready(function(){
-    $("#submit_button").click(function(){
-        
-        let number = $("#serial_number").val();
-        let course = $("#course").val();
-        let Point = $("#point").val();
-        let score = $("#score").val();
-        let weight = $("#point").val()*$("#score").val();
-        var $myTableBody = $("#content");
-       
+var currentQuestion = 0;
+var correctAnswers = 0;
+var quizOver = false;
 
-        
-        var myValue = [`${number},${course}, ${Point}, ${score} ${weight}`]
-        ;
+$(document).ready(function() {
 
-        var rowElements = myValue.map(function(row){
-            // creating row
-            var $row = $('<tr></tr>');
-            // creating column
-            var $number = $(`<td>${number}</td>`).html(row.number);
-            var $course = $(`<td>${course}</td>`).html(row.course);
-            var $Point = $(`<td>${Point}</td>`).html(row.Point);
-            var $score = $(`<td>${score}</td>`).html(row.score);
-            var $weight = $(`<td>${weight}</td>`).html(row.weight);
-            var $delete = $(`<td><button id="delbtn">DELETE</button></td>`)
-            var $Edit = $(`<td><button id="editbtn">Edit</button></td>`)
-            
-            
+    // Display the first question
+    displayCurrentQuestion();
+    $(this).find(".quizMessage").hide();
 
-            // add columns to row
-            $row.append($number, $course, $Point, $score, $weight, $delete, $Edit);
+    // On clicking next, display the next question
+    $(this).find(".nextButton").on("click", function() {
+        if (!quizOver) {
 
-            return $row;
-            });
+            value = $("input[type='radio']:checked").val();
 
+            if (value == undefined) {
+                $(document).find(".quizMessage").text("Please select an answer");
+                $(document).find(".quizMessage").show();
+            } else {
+                // TODO: Remove any message -> not sure if this is efficient to call this each time....
+                $(document).find(".quizMessage").hide();
 
-        $myTableBody.append(rowElements);
-    
-        $("#name, #department, #course, #point, #score, #serial_number").val("");
+                if (value == questions[currentQuestion].correctAnswer) {
+                    correctAnswers++;
+                }
 
-         $("td #delbtn").click(function() {
-            $(this).parents("tr").remove();
-        });
-
-         // edit button
-        $('td #editbtn').click(function(){
-            var par = $(this).parent().parent(); //tr 
-            
-            var tdcourse = par.children("td:nth-child(2)"); 
-            var tdpoint = par.children("td:nth-child(3)");
-            var tdscore = par.children("td:nth-child(4)");
-            
-            tdcourse.html("<input type='text' id='txtPhone' value='"+tdcourse.text()+"'/>"); 
-
-            tdpoint.html("<input type='text' id='txtEmail' value='"+tdpoint.text()+"'/>");
-            
-            tdscore.html("<input type='text' id='txtEmail' value='"+tdscore.text()+"'/>");
-        
-        })
-
-       
-        // on double click of editbtn save row
-        $('td #editbtn').dblclick(function(){
-            var par = $(this).parent().parent(); //tr 
-            
-            var tdcourse = par.children("td:nth-child(2)"); 
-            var tdpoint = par.children("td:nth-child(3)");
-            var tdscore = par.children("td:nth-child(4)");
-
-            tdcourse.html(tdcourse.children("input[type=text]").val()); 
-
-            tdpoint.html(tdpoint.children("input[type=text]").val());
-
-            tdscore.html(tdscore.children("input[type=text]").val());
-        });
-
-        // getting total sum value culumn
-        $("table thead th").each(function(i){
-            calculateColumn(i);
-
-            function calculateColumn(index){
-                var total = 0;
-                $("table tr").each(function(){
-                    var value = parseInt($('td', this).eq(index).text());
-                    if(!isNaN(value)){
-                        total += value;
-                    }
-                });
-                $('tfoot td').eq(index).text(total);
+                currentQuestion++; // Since we have already displayed the first question on DOM ready
+                if (currentQuestion < questions.length) {
+                    displayCurrentQuestion();
+                } else {
+                    displayScore();
+                    //                    $(document).find(".nextButton").toggle();
+                    //                    $(document).find(".playAgainButton").toggle();
+                    // Change the text in the next button to ask if user wants to play again
+                    $(document).find(".nextButton").text("Play Again?");
+                    quizOver = true;
+                }
             }
-        })
-});   
-
-    
-    $("#GPA_button").click(function(){
-        var totalweight = $("#totalweight").text();
-        var totalPoint = $("#totalpoint").text();
-        var x = totalweight/(totalPoint*100);
-        var gpa =  x*5;
-
-        $("#gpa").append("your GPA is" + gpa.toFixed(2));
-
-        let name = $("#name").val();
-        let department = $("#department").val();
-
-        $("#para_name").append(`Name: ${name}`);
-        $("#para_dept").append(`Department: ${department}`);
-    })
-   
-    $('#add_button').click(function(){
-        var newField = $('<tbody id="table_body"><tr><th scope="row"><input type="text" name="" id="serial_number" class="serial_number_input"></th><td><input type="text" name="" id="course"></td><td><input type="text" name="" id="point"></td><td><input type="text" name="" id="score"></td> </tr></tbody> ');
-        newField.appendTo($(".table"));
+        } else { // quiz is over and clicked the next button (which now displays 'Play Again?'
+            quizOver = false;
+            $(document).find(".nextButton").text("Next Question");
+            resetQuiz();
+            displayCurrentQuestion();
+            hideScore();
+        }
     });
 
-    // styling
-    $("#GPA_button").hover(function(){
-        $(this).css("background-color", "red")
-    }, function(){
-  $(this).css("background-color", "white");
 });
+
+// This displays the current question AND the choices
+function displayCurrentQuestion() {
+
+    console.log("In display current Question");
+
+    var question = questions[currentQuestion].question;
+    var questionClass = $(document).find(".quizContainer > .question");
+    var choiceList = $(document).find(".quizContainer > .choiceList");
+    var numChoices = questions[currentQuestion].choices.length;
+
+    // Set the questionClass text to the current question
+    $(questionClass).text(question);
+
+    // Remove all current <li> elements (if any)
+    $(choiceList).find("li").remove();
+
+    var choice;
+    for (i = 0; i < numChoices; i++) {
+        choice = questions[currentQuestion].choices[i];
+        $('<li><input type="radio" value=' + i + ' name="dynradio" />' + choice + '</li>').appendTo(choiceList);
+    }
+}
+
+function resetQuiz() {
+    currentQuestion = 0;
+    correctAnswers = 0;
+    hideScore();
+}
+
+function displayScore() {
+    $(document).find(".quizContainer > .result").text("You score is: " + correctAnswers*10 + "%");
+    $(document).find(".quizContainer > .result").show();
+    if( (correctAnswers*10) >= 80){
+        $(document).find(".quizContainer > .animate").animate("excellent") + "you are an avenger" +displayScore;
+    }else if((correctAnswers*10) <= 75){
+        $(document).find(".quizContainer > .animate").animate("Poor poor poor") + "This is why you are not an avenger" +displayScore;
+    }
     
-});
+}
+function animate(){
+    $(document).find(".quizContainer > .animate").animate("excellent") + displayScore;
+}
+
+function hideScore() {
+    $(document).find(".result").hide();
+}
+
+
 
