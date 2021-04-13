@@ -1,0 +1,47 @@
+table {
+  width: 100%;
+  border: 1px solid black;
+}
+
+th,
+td {
+  text-align: center;
+  padding: 10px;
+}
+
+.serial_number_input {
+  width: 4rem;
+}
+
+#totalNumber {
+  visibility: hidden;
+}
+
+.table_foot {
+  visibility: hidden;
+}
+
+.first-div {
+  background-color: #00cc99;
+  padding: 20px;
+  margin: 20px;
+}
+
+.output_table_div {
+  background-color: #008060;
+  padding: 20px;
+  margin: 20px;
+}
+
+#submit-table {
+  width: 100%;
+}
+
+input:hover {
+  background-color: magenta;
+  color: aliceblue;
+}
+
+#t_head {
+  color: white;
+}
